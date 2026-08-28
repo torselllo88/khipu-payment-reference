@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-image: radial-gradient(circle at top, rgba(91, 61, 245, 0.12), transparent 55%);
+}
