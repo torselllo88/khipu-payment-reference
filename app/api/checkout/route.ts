@@ -10,6 +10,7 @@ import {
 import { dispatchWebhookRequest, type UnlimitWebhookEvent } from "@/lib/unlimit/webhook";
 import { appendEvent, createOrder, getOrder, setLastWebhookRequest, toPublicOrder, type OrderEvent } from "@/lib/store";
 import { createVirtualClock } from "@/lib/virtualClock";
+import { internalOrigin } from "@/lib/internalOrigin";
 import type { EventMessageKey } from "@/lib/i18n/dictionary";
 
 export async function POST(req: NextRequest) {
@@ -214,6 +215,6 @@ async function sendWebhook(
     timestamp: clock.tick(2000),
   });
 
-  const { record } = await dispatchWebhookRequest(new URL(req.url).origin, event, clock.tick(1000));
+  const { record } = await dispatchWebhookRequest(internalOrigin(req), event, clock.tick(1000));
   setLastWebhookRequest(orderId, record);
 }

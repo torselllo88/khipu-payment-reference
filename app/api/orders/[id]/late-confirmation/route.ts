@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { dispatchWebhookRequest, type UnlimitWebhookEvent } from "@/lib/unlimit/webhook";
 import { appendEvent, getOrder, setLastWebhookRequest, toPublicOrder } from "@/lib/store";
 import { createVirtualClock, continueFrom } from "@/lib/virtualClock";
+import { internalOrigin } from "@/lib/internalOrigin";
 
 // A2A-specific edge case: Khipu confirms a transfer that genuinely completed
 // on time, but the confirmation itself is processed after the payment
@@ -53,7 +54,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     timestamp: clock.tick(2000),
   });
 
-  const { record } = await dispatchWebhookRequest(new URL(req.url).origin, event, clock.tick(1000));
+  const { record } = await dispatchWebhookRequest(internalOrigin(req), event, clock.tick(1000));
   setLastWebhookRequest(id, record);
 
   return NextResponse.json({ order: toPublicOrder(getOrder(id)!) });
